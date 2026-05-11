@@ -1,0 +1,1777 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monitoramento</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=Fraunces:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f0f7f2;
+  --surface: #ffffff;
+  --surface2: #f4faf6;
+  --surface3: #e8f5ed;
+  --border: rgba(0,0,0,0.07);
+  --border2: rgba(0,0,0,0.13);
+  --text: #1a2e22;
+  --text2: #4a6655;
+  --text3: #7fa98c;
+  --accent: #16a34a;
+  --accent-dim: rgba(22,163,74,0.10);
+  --accent2: #0891b2;
+  --accent2-dim: rgba(8,145,178,0.10);
+  --warn: #d97706;
+  --warn-dim: rgba(217,119,6,0.10);
+  --danger: #dc2626;
+  --danger-dim: rgba(220,38,38,0.10);
+  --purple: #7c3aed;
+  --purple-dim: rgba(124,58,237,0.10);
+  --teal: #0f766e;
+  --teal-dim: rgba(15,118,110,0.10);
+  --green-dark: #14532d;
+  --green-mid: #166534;
+  --green-nav: #15803d;
+  --radius: 10px;
+  --radius-lg: 16px;
+  --nav-w: 220px;
+  --header-h: 60px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: var(--nav-w);
+  background: var(--green-dark);
+  border-right: 1px solid rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  z-index: 100;
+  padding: 0 0 1rem;
+}
+
+.sidebar-logo {
+  padding: 1.25rem 1.25rem 1rem;
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+  margin-bottom: .5rem;
+}
+.logo-mark {
+  font-family: 'Fraunces', serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #bbf7d0;
+  letter-spacing: -.01em;
+  line-height: 1;
+}
+.logo-sub {
+  font-size: 10px;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin-top: 2px;
+  font-family: 'DM Mono', monospace;
+}
+
+.nav-section {
+  padding: .375rem .75rem .125rem;
+  font-size: 10px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  font-family: 'DM Mono', monospace;
+  margin-top: .5rem;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: .55rem 1rem;
+  margin: 1px .5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  color: rgba(255,255,255,0.65);
+  font-size: 13.5px;
+  font-weight: 400;
+  transition: all .15s;
+  border: none;
+  background: none;
+  width: calc(100% - 1rem);
+  text-align: left;
+}
+.nav-item:hover { background: rgba(255,255,255,0.08); color: #fff; }
+.nav-item.active { background: rgba(255,255,255,0.15); color: #bbf7d0; font-weight: 500; }
+.nav-item .icon { font-size: 16px; width: 18px; flex-shrink: 0; opacity: .85; }
+.nav-item .badge {
+  margin-left: auto;
+  background: rgba(220,38,38,0.3);
+  color: #fca5a5;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 99px;
+  font-family: 'DM Mono', monospace;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 1rem;
+  border-top: 1px solid rgba(255,255,255,0.10);
+  font-size: 11px;
+  color: rgba(255,255,255,0.3);
+}
+
+/* ── MAIN ── */
+.main {
+  margin-left: var(--nav-w);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.topbar {
+  height: var(--header-h);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 2rem;
+  gap: 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.topbar-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+.topbar-sub {
+  font-size: 12px;
+  color: var(--text3);
+  margin-left: 4px;
+}
+.topbar-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+}
+.today-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--text3);
+  padding: 4px 10px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.content {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+/* ── PANELS ── */
+.panel { display: none; }
+.panel.active { display: block; animation: fadein .2s ease; }
+@keyframes fadein { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+/* ── KPI GRID ── */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+.kpi-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+.kpi-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+.kpi-card.green::before { background: var(--accent); }
+.kpi-card.blue::before  { background: var(--accent2); }
+.kpi-card.red::before   { background: var(--danger); }
+.kpi-card.warn::before  { background: var(--warn); }
+.kpi-card.purple::before{ background: var(--purple); }
+.kpi-card.teal::before  { background: var(--teal); }
+.kpi-label { font-size: 11px; color: var(--text3); letter-spacing: .04em; text-transform: uppercase; font-family: 'DM Mono', monospace; margin-bottom: .5rem; }
+.kpi-value { font-size: 28px; font-weight: 600; line-height: 1; }
+.kpi-card.green .kpi-value { color: var(--accent); }
+.kpi-card.blue .kpi-value  { color: var(--accent2); }
+.kpi-card.red .kpi-value   { color: var(--danger); }
+.kpi-card.warn .kpi-value  { color: var(--warn); }
+.kpi-card.purple .kpi-value{ color: var(--purple); }
+.kpi-card.teal .kpi-value  { color: var(--teal); }
+.kpi-sub { font-size: 12px; color: var(--text3); margin-top: 4px; }
+
+/* ── SECTION HEADER ── */
+.section-hd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.section-hd h2 {
+  font-family: 'Fraunces', serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* ── TABLE ── */
+.table-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.table-scroll { overflow-x: auto; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+thead th {
+  background: var(--surface3);
+  color: var(--text3);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  font-family: 'DM Mono', monospace;
+  padding: .75rem 1rem;
+  text-align: left;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--border);
+}
+tbody tr {
+  border-bottom: 1px solid var(--border);
+  transition: background .1s;
+}
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: var(--surface2); }
+tbody td {
+  padding: .75rem 1rem;
+  color: var(--text);
+  vertical-align: middle;
+}
+.td-muted { color: var(--text2); }
+.td-mono { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text2); }
+
+/* ── BADGES ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+  font-family: 'DM Mono', monospace;
+}
+.badge-green  { background: var(--accent-dim);  color: var(--accent); }
+.badge-blue   { background: var(--accent2-dim); color: var(--accent2); }
+.badge-red    { background: var(--danger-dim);  color: var(--danger); }
+.badge-warn   { background: var(--warn-dim);    color: var(--warn); }
+.badge-purple { background: var(--purple-dim);  color: var(--purple); }
+.badge-teal   { background: var(--teal-dim);    color: var(--teal); }
+.badge-gray   { background: var(--surface3);    color: var(--text3); }
+
+/* ── FORMS ── */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.form-grid.cols3 { grid-template-columns: 1fr 1fr 1fr; }
+.form-full { grid-column: 1 / -1; }
+.field { display: flex; flex-direction: column; gap: 5px; }
+.field label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text3);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  font-family: 'DM Mono', monospace;
+}
+.field label .req { color: var(--accent); margin-left: 2px; }
+.field input, .field select, .field textarea {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  padding: .6rem .875rem;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13.5px;
+  outline: none;
+  transition: border-color .15s, box-shadow .15s;
+  width: 100%;
+}
+.field input:focus, .field select:focus, .field textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-dim);
+}
+.field select { cursor: pointer; }
+.field textarea { resize: vertical; min-height: 80px; }
+
+/* ── FORM CARD ── */
+.form-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.form-card-title {
+  font-size: 11px;
+  color: var(--text3);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  font-family: 'DM Mono', monospace;
+  margin-bottom: 1rem;
+  padding-bottom: .75rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ── BUTTONS ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: .55rem 1.1rem;
+  border-radius: var(--radius);
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: all .15s;
+  font-family: 'DM Sans', sans-serif;
+  white-space: nowrap;
+}
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: #15803d; }
+.btn-primary:active { transform: scale(.98); }
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--border2);
+  color: var(--text2);
+}
+.btn-outline:hover { background: var(--surface2); color: var(--text); border-color: var(--border2); }
+.btn-danger { background: var(--danger-dim); color: var(--danger); }
+.btn-danger:hover { background: rgba(248,113,113,.2); }
+.btn-sm { padding: .35rem .8rem; font-size: 12px; }
+
+/* ── SEARCH BAR ── */
+.searchbar {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  padding: .45rem .875rem;
+  min-width: 240px;
+}
+.searchbar input {
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-size: 13.5px;
+  width: 100%;
+  font-family: 'DM Sans', sans-serif;
+}
+.searchbar input::placeholder { color: var(--text3); }
+.searchbar .icon { color: var(--text3); font-size: 15px; }
+
+/* ── FILTER CHIPS ── */
+.filter-row { display: flex; gap: .5rem; flex-wrap: wrap; align-items: center; }
+.chip {
+  padding: .3rem .85rem;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid var(--border2);
+  background: transparent;
+  color: var(--text2);
+  cursor: pointer;
+  transition: all .15s;
+  font-family: 'DM Sans', sans-serif;
+}
+.chip:hover { background: var(--surface2); color: var(--text); }
+.chip.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+
+/* ── MODAL ── */
+.modal-bg {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.7);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  animation: fadein .15s ease;
+}
+.modal-bg.hidden { display: none; }
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 640px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 1.75rem;
+  position: relative;
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+}
+.modal-title { font-family: 'Fraunces', serif; font-size: 1.2rem; font-weight: 600; }
+.modal-close {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  width: 30px; height: 30px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  color: var(--text2);
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.modal-close:hover { background: var(--surface3); color: var(--text); }
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: .75rem;
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+}
+
+/* ── DETAIL CARD ── */
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.detail-item .dl { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: .04em; font-family: 'DM Mono', monospace; margin-bottom: 3px; }
+.detail-item .dv { font-size: 14px; color: var(--text); }
+
+/* ── TOAST ── */
+.toast-area { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 999; display: flex; flex-direction: column; gap: .5rem; }
+.toast {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  padding: .75rem 1.1rem;
+  font-size: 13px;
+  color: var(--text);
+  display: flex; align-items: center; gap: 8px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.4);
+  animation: toast-in .25s ease;
+  max-width: 320px;
+}
+.toast.success { border-left: 3px solid var(--accent); }
+.toast.error   { border-left: 3px solid var(--danger); }
+@keyframes toast-in { from { opacity: 0; transform: translateX(16px); } to { opacity: 1; transform: none; } }
+
+/* ── EMPTY STATE ── */
+.empty-state {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: var(--text3);
+}
+.empty-state .icon { font-size: 2.5rem; margin-bottom: .75rem; opacity: .4; }
+.empty-state p { font-size: 14px; }
+
+/* ── DASHBOARD CHARTS ── */
+.chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
+.chart-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+}
+.chart-card-title { font-size: 12px; color: var(--text3); font-family: 'DM Mono', monospace; letter-spacing: .05em; text-transform: uppercase; margin-bottom: 1rem; }
+
+/* ── PROGRESS BAR ── */
+.prog-bar { height: 6px; background: var(--surface3); border-radius: 99px; overflow: hidden; margin: 4px 0 8px; }
+.prog-fill { height: 100%; border-radius: 99px; transition: width .6s ease; }
+
+/* ── DAYS BADGE ── */
+.days-badge { font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500; }
+
+/* ── TABS inside panel ── */
+.inner-tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; }
+.inner-tab {
+  padding: .6rem 1rem;
+  font-size: 13px;
+  color: var(--text3);
+  cursor: pointer;
+  border: none; background: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  font-family: 'DM Sans', sans-serif;
+  transition: color .15s;
+}
+.inner-tab:hover { color: var(--text); }
+.inner-tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 500; }
+
+/* ── UTILS ── */
+.flex { display: flex; }
+.flex-center { display: flex; align-items: center; }
+.gap-sm { gap: .5rem; }
+.gap-md { gap: 1rem; }
+.mb-lg { margin-bottom: 1.5rem; }
+.text-sm { font-size: 12px; }
+.text-mono { font-family: 'DM Mono', monospace; }
+.action-cell { display: flex; gap: 6px; }
+.avatar {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: var(--accent-dim);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 600;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.emp-cell { display: flex; align-items: center; gap: 10px; }
+.emp-cell .name { font-weight: 500; font-size: 13.5px; }
+.emp-cell .sub  { font-size: 11px; color: var(--text3); }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">Monitoramento</div>
+    <div class="logo-sub">Controle Ambiental</div>
+  </div>
+
+  <div class="nav-section">Principal</div>
+  <button class="nav-item active" onclick="nav('dashboard')">
+    <span class="icon">⬛</span> Dashboard
+  </button>
+  <button class="nav-item" onclick="nav('empreendimentos')">
+    <span class="icon">🏗</span> Empreendimentos
+  </button>
+
+  <div class="nav-section">Controle</div>
+  <button class="nav-item" onclick="nav('monitoramento')">
+    <span class="icon">📋</span> Monitoramento
+  </button>
+  <button class="nav-item" id="nav-pendencias" onclick="nav('pendencias')">
+    <span class="icon">⚠️</span> Pendências IAT
+    <span class="badge" id="badge-pend">0</span>
+  </button>
+  <button class="nav-item" onclick="nav('analises')">
+    <span class="icon">🔬</span> Análises
+  </button>
+  <button class="nav-item" onclick="nav('mtr')">
+    <span class="icon">♻️</span> MTR
+  </button>
+
+  <div class="nav-section">Ferramentas</div>
+  <button class="nav-item" onclick="nav('busca')">
+    <span class="icon">🔍</span> Busca
+  </button>
+  <button class="nav-item" onclick="nav('config')">
+    <span class="icon">⚙️</span> Configurações
+  </button>
+
+  <div class="sidebar-footer">
+    <div id="conn-status" style="font-size:11px">🟡 <span style="color:rgba(255,255,255,.4)">Modo local</span></div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div>
+      <span class="topbar-title" id="topbar-title">Dashboard</span>
+      <span class="topbar-sub" id="topbar-sub"></span>
+    </div>
+    <div class="topbar-right">
+      <span class="today-badge" id="today-lbl"></span>
+      <button class="btn btn-primary btn-sm" onclick="openModal('emp')">+ Cadastrar</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ════ DASHBOARD ════ -->
+    <div class="panel active" id="panel-dashboard">
+      <div class="kpi-grid" id="dash-kpis"></div>
+      <div class="chart-grid">
+        <div class="chart-card">
+          <div class="chart-card-title">Status das licenças</div>
+          <div id="chart-licencas"></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-card-title">Pendências por empreendimento</div>
+          <div id="chart-pendencias"></div>
+        </div>
+      </div>
+      <div style="margin-top:1rem" class="chart-grid">
+        <div class="chart-card">
+          <div class="chart-card-title">Análises — próximas coletas (30 dias)</div>
+          <div id="chart-analises"></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-card-title">MTR — status manifesto</div>
+          <div id="chart-mtr"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════ EMPREENDIMENTOS ════ -->
+    <div class="panel" id="panel-empreendimentos">
+      <div class="section-hd">
+        <h2>Empreendimentos cadastrados</h2>
+        <div class="flex gap-sm">
+          <div class="searchbar">
+            <span class="icon">🔍</span>
+            <input type="text" id="search-emp" placeholder="Buscar..." oninput="renderTable('emp')">
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="openModal('emp')">+ Novo</button>
+        </div>
+      </div>
+      <div class="filter-row mb-lg" id="filters-emp"></div>
+      <div class="table-wrap">
+        <div class="table-scroll">
+          <table>
+            <thead><tr id="thead-emp"></tr></thead>
+            <tbody id="tbody-emp"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════ MONITORAMENTO ════ -->
+    <div class="panel" id="panel-monitoramento">
+      <div class="section-hd">
+        <h2>Controle de monitoramento</h2>
+        <div class="flex gap-sm">
+          <div class="searchbar">
+            <span class="icon">🔍</span>
+            <input type="text" id="search-mon" placeholder="Buscar..." oninput="renderTable('mon')">
+          </div>
+        </div>
+      </div>
+      <div class="kpi-grid" id="mon-kpis"></div>
+      <div class="filter-row mb-lg" id="filters-mon"></div>
+      <div class="table-wrap">
+        <div class="table-scroll">
+          <table>
+            <thead><tr id="thead-mon"></tr></thead>
+            <tbody id="tbody-mon"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════ PENDÊNCIAS ════ -->
+    <div class="panel" id="panel-pendencias">
+      <div class="section-hd">
+        <h2>Pendências IAT</h2>
+        <div class="flex gap-sm">
+          <div class="searchbar">
+            <span class="icon">🔍</span>
+            <input type="text" id="search-pend" placeholder="Buscar..." oninput="renderTable('pend')">
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="openModal('pend')">+ Nova pendência</button>
+        </div>
+      </div>
+      <div class="kpi-grid" id="pend-kpis"></div>
+      <div class="filter-row mb-lg" id="filters-pend"></div>
+      <div class="table-wrap">
+        <div class="table-scroll">
+          <table>
+            <thead><tr id="thead-pend"></tr></thead>
+            <tbody id="tbody-pend"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════ ANÁLISES ════ -->
+    <div class="panel" id="panel-analises">
+      <div class="section-hd">
+        <h2>Análises — Efluente e Água de Poço</h2>
+        <div class="flex gap-sm">
+          <div class="searchbar">
+            <span class="icon">🔍</span>
+            <input type="text" id="search-anal" placeholder="Buscar..." oninput="renderTable('anal')">
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="openModal('anal')">+ Nova análise</button>
+        </div>
+      </div>
+      <div class="kpi-grid" id="anal-kpis"></div>
+      <div class="filter-row mb-lg" id="filters-anal"></div>
+      <div class="table-wrap">
+        <div class="table-scroll">
+          <table>
+            <thead><tr id="thead-anal"></tr></thead>
+            <tbody id="tbody-anal"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════ MTR ════ -->
+    <div class="panel" id="panel-mtr">
+      <div class="section-hd">
+        <h2>MTR — Manifesto de Transporte de Resíduos</h2>
+        <div class="flex gap-sm">
+          <div class="searchbar">
+            <span class="icon">🔍</span>
+            <input type="text" id="search-mtr" placeholder="Buscar..." oninput="renderTable('mtr')">
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="openModal('mtr')">+ Novo MTR</button>
+        </div>
+      </div>
+      <div class="kpi-grid" id="mtr-kpis"></div>
+      <div class="filter-row mb-lg" id="filters-mtr"></div>
+      <div class="table-wrap">
+        <div class="table-scroll">
+          <table>
+            <thead><tr id="thead-mtr"></tr></thead>
+            <tbody id="tbody-mtr"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════ BUSCA ════ -->
+    <div class="panel" id="panel-busca">
+      <div class="section-hd"><h2>Busca global</h2></div>
+      <div class="form-card" style="margin-bottom:1.5rem">
+        <div class="searchbar" style="background:var(--surface2);border:1px solid var(--border2);padding:.75rem 1.1rem">
+          <span class="icon" style="font-size:18px">🔍</span>
+          <input type="text" id="search-global" placeholder="Buscar empreendimento por nome, CNPJ, município, responsável..." oninput="renderBusca()" style="font-size:15px">
+        </div>
+      </div>
+      <div id="busca-result"></div>
+    </div>
+
+    <!-- ════ CONFIGURAÇÕES ════ -->
+    <div class="panel" id="panel-config">
+      <div class="section-hd"><h2>⚙️ Configurações — Banco de dados</h2></div>
+
+      <!-- STATUS CARD -->
+      <div class="form-card" style="margin-bottom:1.25rem;border-left:4px solid var(--accent)">
+        <div style="display:flex;align-items:center;gap:1rem">
+          <div style="font-size:2rem" id="cfg-status-icon">🟡</div>
+          <div>
+            <div style="font-weight:600;font-size:15px;color:var(--text)" id="cfg-status-txt">Modo local — dados salvos apenas neste navegador</div>
+            <div style="font-size:12px;color:var(--text3);margin-top:2px">Configure o Supabase abaixo para compartilhar dados com a equipe em tempo real.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CREDENTIALS FORM -->
+      <div class="form-card" style="margin-bottom:1.25rem">
+        <div class="form-card-title">🗄️ Credenciais do Supabase</div>
+        <div class="field" style="margin-bottom:1rem">
+          <label>PROJECT URL</label>
+          <input id="cfg-url" type="text" placeholder="https://xxxxxxxxxxx.supabase.co" style="font-family:'DM Mono',monospace;font-size:13px">
+          <span style="font-size:11px;color:var(--text3);margin-top:3px">Encontre em: Settings → General → Project URL</span>
+        </div>
+        <div class="field" style="margin-bottom:1.25rem">
+          <label>ANON PUBLIC KEY</label>
+          <input id="cfg-key" type="text" placeholder="sb_publicable_aa_... ou eyJhbGci..." style="font-family:'DM Mono',monospace;font-size:12px">
+          <span style="font-size:11px;color:var(--text3);margin-top:3px">Encontre em: Settings → Chaves da API → "Chave publicável" (começa com <code>sb_publicable_</code>) ou aba Legacy → anon public</span>
+        </div>
+        <div style="display:flex;gap:.75rem;flex-wrap:wrap">
+          <button class="btn btn-primary" onclick="salvarConfig()">✓ Salvar e conectar</button>
+          <button class="btn btn-outline" onclick="testarConexao()">🔌 Testar conexão</button>
+          <button class="btn btn-danger" onclick="desconectar()">✕ Desconectar</button>
+        </div>
+      </div>
+
+      <!-- INSTRUCTIONS -->
+      <div class="form-card" style="background:var(--surface2)">
+        <div class="form-card-title">💡 Como obter as credenciais</div>
+        <div style="font-size:13.5px;color:var(--text2);line-height:2">
+          <div>1. Acesse <strong>supabase.com</strong> → seu projeto</div>
+          <div>2. No menu lateral clique em <strong>Settings → Chaves da API</strong></div>
+          <div>3. Aba <strong>"Chaves de API publicáveis e secretas"</strong> → copie a <strong>Chave publicável</strong> (começa com <code style="font-size:11px">sb_publicable_</code>)</div>
+          <div>4. Vá em <strong>Settings → General</strong> → copie a <strong>Project URL</strong></div>
+          <div>5. Cole os dois campos acima e clique em <strong>Salvar e conectar</strong></div>
+        </div>
+        <div style="margin-top:1rem;padding:1rem;background:#fff;border:1px solid var(--border2);border-radius:var(--radius);font-size:12px;color:var(--text3)">
+          <strong style="color:var(--text2);display:block;margin-bottom:.35rem">⚠️ Ainda não criou as tabelas no Supabase?</strong>
+          Execute o SQL abaixo no <strong>SQL Editor</strong> do Supabase antes de conectar:
+          <div style="margin-top:.75rem;background:#0f172a;border-radius:8px;padding:1rem;font-family:'DM Mono',monospace;font-size:11px;color:#86efac;line-height:1.8;white-space:pre-wrap;overflow-x:auto" id="sql-mini">CREATE TABLE IF NOT EXISTS empreendimentos (id BIGSERIAL PRIMARY KEY, nome TEXT NOT NULL, cnpj TEXT, resp TEXT, email TEXT, tel TEXT, "end" TEXT, mun TEXT, uf TEXT DEFAULT 'PR', cep TEXT, nlic TEXT, tlic TEXT, demis DATE, dvenc DATE, status TEXT DEFAULT 'Ativa', "tipoAgua" TEXT, outorga TEXT, efluente TEXT, "tipoEfluente" TEXT, reuso TEXT, "corpoReceptor" TEXT, created_at TIMESTAMPTZ DEFAULT NOW());
+CREATE TABLE IF NOT EXISTS pendencias (id BIGSERIAL PRIMARY KEY, emp TEXT NOT NULL, tipo TEXT, desc TEXT, dabertura DATE, prazo DATE, status TEXT DEFAULT 'Aberto', resp TEXT, obs TEXT, created_at TIMESTAMPTZ DEFAULT NOW());
+CREATE TABLE IF NOT EXISTS analises (id BIGSERIAL PRIMARY KEY, emp TEXT NOT NULL, tipo TEXT, params TEXT, period TEXT, ultima DATE, proxima DATE, lab TEXT, laudo TEXT, resultado TEXT DEFAULT 'Aguardando', status TEXT DEFAULT 'Aguardando', created_at TIMESTAMPTZ DEFAULT NOW());
+CREATE TABLE IF NOT EXISTS mtrs (id BIGSERIAL PRIMARY KEY, num TEXT, demis DATE, emp TEXT NOT NULL, transp TEXT, dest TEXT, residuo TEXT, ibama TEXT, qtd NUMERIC, drec DATE, status TEXT DEFAULT 'Pendente', created_at TIMESTAMPTZ DEFAULT NOW());
+ALTER TABLE empreendimentos ENABLE ROW LEVEL SECURITY;
+ALTER TABLE pendencias ENABLE ROW LEVEL SECURITY;
+ALTER TABLE analises ENABLE ROW LEVEL SECURITY;
+ALTER TABLE mtrs ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "pub_emp" ON empreendimentos FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "pub_pend" ON pendencias FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "pub_anal" ON analises FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "pub_mtrs" ON mtrs FOR ALL USING (true) WITH CHECK (true);</div>
+          <button class="btn btn-outline btn-sm" style="margin-top:.5rem" onclick="copiarSQL()">📋 Copiar SQL</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- ════ MODALS ════ -->
+
+<!-- Modal Empreendimento -->
+<div class="modal-bg hidden" id="modal-emp">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Cadastrar empreendimento</div>
+      <button class="modal-close" onclick="closeModal('emp')">✕</button>
+    </div>
+    <div class="form-card" style="margin-bottom:1rem">
+      <div class="form-card-title">🏗 Identificação</div>
+      <div class="form-grid">
+        <div class="field form-full"><label>Nome do empreendimento <span class="req">★</span></label><input id="emp-nome" type="text" placeholder="Ex: Postos BV Sul"></div>
+        <div class="field"><label>CNPJ <span class="req">★</span></label><input id="emp-cnpj" type="text" placeholder="00.000.000/0001-00"></div>
+        <div class="field"><label>Responsável técnico <span class="req">★</span></label><input id="emp-resp" type="text" placeholder="Nome completo"></div>
+        <div class="field"><label>E-mail</label><input id="emp-email" type="email" placeholder="email@empresa.com"></div>
+        <div class="field"><label>Telefone</label><input id="emp-tel" type="text" placeholder="(44) 99999-0000"></div>
+      </div>
+    </div>
+    <div class="form-card" style="margin-bottom:1rem">
+      <div class="form-card-title">📍 Endereço</div>
+      <div class="form-grid">
+        <div class="field form-full"><label>Endereço <span class="req">★</span></label><input id="emp-end" type="text" placeholder="Av. das Indústrias, 1200"></div>
+        <div class="field"><label>Município <span class="req">★</span></label><input id="emp-mun" type="text" placeholder="Campo Mourão"></div>
+        <div class="field"><label>Estado (UF)</label>
+          <select id="emp-uf">
+            <option value="PR" selected>PR</option><option>AC</option><option>AL</option><option>AP</option><option>AM</option><option>BA</option><option>CE</option><option>DF</option><option>ES</option><option>GO</option><option>MA</option><option>MT</option><option>MS</option><option>MG</option><option>PA</option><option>PB</option><option>PE</option><option>PI</option><option>RJ</option><option>RN</option><option>RS</option><option>RO</option><option>RR</option><option>SC</option><option>SP</option><option>SE</option><option>TO</option>
+          </select>
+        </div>
+        <div class="field"><label>CEP</label><input id="emp-cep" type="text" placeholder="87300-000"></div>
+      </div>
+    </div>
+    <div class="form-card">
+      <div class="form-card-title">📄 Licença ambiental</div>
+      <div class="form-grid cols3">
+        <div class="field"><label>Nº da licença</label><input id="emp-nlic" type="text" placeholder="LO-2024-0001"></div>
+        <div class="field"><label>Tipo</label>
+          <select id="emp-tlic"><option>LP</option><option>LI</option><option selected>LO</option><option>LAO</option><option>AE</option></select>
+        </div>
+        <div class="field"><label>Status</label>
+          <select id="emp-status"><option selected>Ativa</option><option>Em Renovação</option><option>Vencida</option><option>Suspensa</option></select>
+        </div>
+        <div class="field"><label>Data de emissão</label><input id="emp-demis" type="date"></div>
+        <div class="field"><label>Data de vencimento</label><input id="emp-dvenc" type="date"></div>
+      </div>
+    </div>
+    <div class="form-card" style="margin-top:1rem">
+      <div class="form-card-title">💧 Água &amp; Efluente</div>
+      <div class="form-grid cols3">
+        <div class="field">
+          <label>Tipo de água utilizada</label>
+          <select id="emp-tipo-agua">
+            <option value="">Não se aplica</option>
+            <option>Água de Poço Artesiano</option>
+            <option>Água de Poço Semiartesiano</option>
+            <option>Água Superficial (rio/lago)</option>
+            <option>Água de Abastecimento Público (SANEPAR)</option>
+            <option>Água de Chuva (captação)</option>
+            <option>Água de Reúso</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Possui outorga de água?</label>
+          <select id="emp-outorga">
+            <option value="">Não se aplica</option>
+            <option>Sim — outorga vigente</option>
+            <option>Sim — outorga vencida</option>
+            <option>Não — isento</option>
+            <option>Em processo</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Geração de efluente?</label>
+          <select id="emp-efluente">
+            <option value="Não">Não gera efluente</option>
+            <option value="Sim">Sim — gera efluente</option>
+          </select>
+        </div>
+        <div class="field" id="campo-tipo-efluente">
+          <label>Tipo de efluente</label>
+          <select id="emp-tipo-efluente">
+            <option>Efluente Doméstico (sanitário)</option>
+            <option>Efluente Industrial</option>
+            <option>Efluente Agroindustrial</option>
+            <option>Efluente Misto</option>
+          </select>
+        </div>
+        <div class="field" id="campo-reuso">
+          <label>Efluente é tratado p/ reúso?</label>
+          <select id="emp-reuso">
+            <option value="Não">Não — lançamento no corpo receptor</option>
+            <option value="Sim — reúso parcial">Sim — reúso parcial</option>
+            <option value="Sim — reúso total">Sim — reúso total (zero líquido)</option>
+          </select>
+        </div>
+        <div class="field" id="campo-corpo-receptor">
+          <label>Corpo receptor / destino</label>
+          <input id="emp-corpo-receptor" type="text" placeholder="Ex: Rio Mourão, rede pública...">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('emp')">Cancelar</button>
+      <button class="btn btn-primary" onclick="salvarEmp()">✓ Cadastrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Pendência -->
+<div class="modal-bg hidden" id="modal-pend">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Nova pendência IAT</div>
+      <button class="modal-close" onclick="closeModal('pend')">✕</button>
+    </div>
+    <div class="form-grid">
+      <div class="field form-full"><label>Empreendimento <span class="req">★</span></label><select id="pend-emp"></select></div>
+      <div class="field"><label>Tipo de pendência</label>
+        <select id="pend-tipo"><option>Condicionante</option><option>Monitoramento</option><option>Adequação</option><option>Documentação</option><option>Outro</option></select>
+      </div>
+      <div class="field"><label>Status</label>
+        <select id="pend-status"><option>Aberto</option><option>Em Andamento</option><option>Concluído</option></select>
+      </div>
+      <div class="field form-full"><label>Descrição / Condicionante <span class="req">★</span></label><textarea id="pend-desc" placeholder="Descreva a pendência..."></textarea></div>
+      <div class="field"><label>Data de abertura</label><input id="pend-dabertura" type="date"></div>
+      <div class="field"><label>Prazo / Conclusão</label><input id="pend-prazo" type="date"></div>
+      <div class="field"><label>Responsável</label><input id="pend-resp" type="text" placeholder="Nome do responsável"></div>
+      <div class="field"><label>Observações</label><input id="pend-obs" type="text" placeholder="Obs..."></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('pend')">Cancelar</button>
+      <button class="btn btn-primary" onclick="salvarPend()">✓ Registrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Análise -->
+<div class="modal-bg hidden" id="modal-anal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Nova análise</div>
+      <button class="modal-close" onclick="closeModal('anal')">✕</button>
+    </div>
+    <div class="form-grid">
+      <div class="field form-full"><label>Empreendimento <span class="req">★</span></label><select id="anal-emp"></select></div>
+      <div class="field"><label>Tipo de coleta</label>
+        <select id="anal-tipo"><option>Efluente</option><option>Água de Poço</option><option>Emissão Atmosférica</option></select>
+      </div>
+      <div class="field"><label>Periodicidade</label>
+        <select id="anal-period"><option>Mensal</option><option>Trimestral</option><option>Semestral</option><option>Anual</option></select>
+      </div>
+      <div class="field form-full"><label>Parâmetros</label><input id="anal-params" type="text" placeholder="DBO, DQO, pH, SS..."></div>
+      <div class="field"><label>Última coleta</label><input id="anal-ultima" type="date"></div>
+      <div class="field"><label>Próxima coleta</label><input id="anal-proxima" type="date"></div>
+      <div class="field"><label>Laboratório</label><input id="anal-lab" type="text" placeholder="Nome do laboratório"></div>
+      <div class="field"><label>Nº do laudo</label><input id="anal-laudo" type="text" placeholder="LA-2024-001"></div>
+      <div class="field"><label>Resultado</label>
+        <select id="anal-resultado"><option>Conforme</option><option>Não Conforme</option><option>Aguardando</option></select>
+      </div>
+      <div class="field"><label>Status</label>
+        <select id="anal-status"><option>Aguardando</option><option>Realizada</option><option>Atrasada</option></select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('anal')">Cancelar</button>
+      <button class="btn btn-primary" onclick="salvarAnal()">✓ Registrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal MTR -->
+<div class="modal-bg hidden" id="modal-mtr">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Novo MTR</div>
+      <button class="modal-close" onclick="closeModal('mtr')">✕</button>
+    </div>
+    <div class="form-grid">
+      <div class="field"><label>Nº MTR <span class="req">★</span></label><input id="mtr-num" type="text" placeholder="MTR-2024-001"></div>
+      <div class="field"><label>Data de emissão</label><input id="mtr-demis" type="date"></div>
+      <div class="field form-full"><label>Empreendimento (gerador) <span class="req">★</span></label><select id="mtr-emp"></select></div>
+      <div class="field"><label>Transportadora</label><input id="mtr-transp" type="text" placeholder="Nome da transportadora"></div>
+      <div class="field"><label>Destinatária</label><input id="mtr-dest" type="text" placeholder="Nome da destinatária"></div>
+      <div class="field form-full"><label>Tipo de resíduo</label><input id="mtr-residuo" type="text" placeholder="Resíduos de Óleo Lubrificante"></div>
+      <div class="field"><label>Cód. IBAMA</label><input id="mtr-ibama" type="text" placeholder="I050"></div>
+      <div class="field"><label>Quantidade (kg)</label><input id="mtr-qtd" type="number" placeholder="850"></div>
+      <div class="field"><label>Dt. recebimento</label><input id="mtr-drec" type="date"></div>
+      <div class="field"><label>Status</label>
+        <select id="mtr-status"><option>Pendente</option><option>Em Trânsito</option><option>Concluído</option></select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('mtr')">Cancelar</button>
+      <button class="btn btn-primary" onclick="salvarMtr()">✓ Registrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST AREA -->
+<div class="toast-area" id="toast-area"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+// ══════════════════════════════════════════════════════
+//  DATA STORE
+// ══════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
+//  SUPABASE — suporte ao novo formato sb_publicable_
+// ══════════════════════════════════════════════════════
+let _supa = null;
+let USE_SB = false;
+const SB_TABLES = { emp:'empreendimentos', pend:'pendencias', anal:'analises', mtr:'mtrs' };
+const LS = { url:'mon_supa_url', key:'mon_supa_key' };
+const LOCAL = { emp:'mon_emp', pend:'mon_pend', anal:'mon_anal', mtr:'mon_mtr' };
+
+function initSupa(url, key) {
+  try {
+    // Supabase JS v2 aceita tanto eyJ... quanto sb_publicable_...
+    _supa = window.supabase.createClient(url.trim(), key.trim());
+    USE_SB = true;
+    return true;
+  } catch(e) {
+    USE_SB = false;
+    return false;
+  }
+}
+
+function setConnStatus(state, msg) {
+  const icons = { online:'🟢', offline:'🟡', error:'🔴', syncing:'🔵' };
+  const msgs  = {
+    online:  'Supabase conectado',
+    offline: 'Modo local (offline)',
+    error:   'Erro de conexão',
+    syncing: 'Sincronizando…'
+  };
+  const colors = { online:'#86efac', offline:'rgba(255,255,255,.4)', error:'#fca5a5', syncing:'#93c5fd' };
+  const el = document.getElementById('conn-status');
+  if (el) el.innerHTML = `${icons[state]} <span style="color:${colors[state]};font-size:11px">${msg||msgs[state]}</span>`;
+
+  // also update config panel status card
+  const ico = document.getElementById('cfg-status-icon');
+  const txt = document.getElementById('cfg-status-txt');
+  if (ico) ico.textContent = icons[state];
+  if (txt) txt.textContent = state === 'online'
+    ? 'Conectado ao Supabase — dados compartilhados em tempo real'
+    : state === 'error'
+    ? 'Erro de conexão — verifique a URL e a chave'
+    : 'Modo local — dados salvos apenas neste navegador';
+}
+
+// ── LOCAL STORAGE fallback ─────────────────────────
+function loadLocal(k) {
+  try { const r=localStorage.getItem(LOCAL[k]); return r?JSON.parse(r):[...SEED[k]]; }
+  catch { return [...SEED[k]]; }
+}
+function saveLocal(k) {
+  try { localStorage.setItem(LOCAL[k], JSON.stringify(DB[k])); } catch {}
+}
+
+// ── SUPABASE CRUD ──────────────────────────────────
+async function sbLoad(k) {
+  const { data, error } = await _supa.from(SB_TABLES[k]).select('*').order('id');
+  if (error) throw error;
+  return data;
+}
+async function sbInsert(k, row) {
+  const clean = Object.fromEntries(Object.entries(row).filter(([k])=>k!=='id'));
+  const { data, error } = await _supa.from(SB_TABLES[k]).insert([clean]).select().single();
+  if (error) throw error;
+  return data;
+}
+async function sbDelete(k, id) {
+  const { error } = await _supa.from(SB_TABLES[k]).delete().eq('id', id);
+  if (error) throw error;
+}
+
+// ── UNIFIED DB ─────────────────────────────────────
+const DB = {};
+
+async function loadDB() {
+  for (const k of Object.keys(SEED)) {
+    if (USE_SB) {
+      try {
+        setConnStatus('syncing');
+        DB[k] = await sbLoad(k);
+        saveLocal(k);
+        setConnStatus('online');
+      } catch(e) {
+        DB[k] = loadLocal(k);
+        setConnStatus('error');
+        console.error('Supabase load error', k, e.message);
+      }
+    } else {
+      DB[k] = loadLocal(k);
+    }
+  }
+}
+
+async function saveDB(k, newRow) {
+  saveLocal(k);
+  if (USE_SB && newRow) {
+    try {
+      setConnStatus('syncing');
+      const inserted = await sbInsert(k, newRow);
+      const idx = DB[k].findIndex(r=>r.id===newRow.id);
+      if (idx!==-1) DB[k][idx]=inserted;
+      saveLocal(k);
+      setConnStatus('online');
+    } catch(e) {
+      setConnStatus('error');
+      toast('Salvo localmente. Erro Supabase: '+e.message,'error');
+    }
+  }
+}
+
+async function deleteDB(k, id) {
+  DB[k] = DB[k].filter(e=>e.id!==id);
+  saveLocal(k);
+  if (USE_SB) {
+    try { setConnStatus('syncing'); await sbDelete(k,id); setConnStatus('online'); }
+    catch(e) { setConnStatus('error'); toast('Erro ao remover no Supabase: '+e.message,'error'); }
+  }
+}
+
+function nextId(k) { return DB[k].length ? Math.max(...DB[k].map(x=>x.id||0))+1 : 1; }
+
+// ── CONFIG FUNCTIONS ───────────────────────────────
+async function salvarConfig() {
+  const url = document.getElementById('cfg-url').value.trim();
+  const key = document.getElementById('cfg-key').value.trim();
+  if (!url || !key) { toast('Preencha a URL e a chave','error'); return; }
+  if (!url.startsWith('https://')) { toast('URL inválida — deve começar com https://','error'); return; }
+  localStorage.setItem(LS.url, url);
+  localStorage.setItem(LS.key, key);
+  const ok = initSupa(url, key);
+  if (!ok) { setConnStatus('error'); toast('Erro ao inicializar. Verifique os dados.','error'); return; }
+  toast('Conectando ao Supabase…','success');
+  await loadDB();
+  renderPanel(currentPanel==='config' ? 'dashboard' : currentPanel);
+  if (currentPanel==='config') nav('dashboard');
+}
+
+async function testarConexao() {
+  const url = document.getElementById('cfg-url').value.trim();
+  const key = document.getElementById('cfg-key').value.trim();
+  if (!url || !key) { toast('Preencha a URL e a chave primeiro','error'); return; }
+  try {
+    const client = window.supabase.createClient(url, key);
+    const { error } = await client.from('empreendimentos').select('id').limit(1);
+    if (error) throw error;
+    toast('✅ Conexão bem-sucedida! As tabelas foram encontradas.','success');
+    setConnStatus('online');
+  } catch(e) {
+    const msg = e.message||'';
+    if (msg.includes('relation') || msg.includes('does not exist')) {
+      toast('Conectou ao Supabase, mas as tabelas não existem. Execute o SQL primeiro.','error');
+    } else {
+      toast('Falha: '+msg,'error');
+    }
+    setConnStatus('error');
+  }
+}
+
+function desconectar() {
+  localStorage.removeItem(LS.url);
+  localStorage.removeItem(LS.key);
+  _supa = null; USE_SB = false;
+  setConnStatus('offline');
+  document.getElementById('cfg-url').value = '';
+  document.getElementById('cfg-key').value = '';
+  toast('Desconectado. Usando modo local.','success');
+}
+
+function copiarSQL() {
+  const el = document.getElementById('sql-mini');
+  navigator.clipboard.writeText(el.textContent).then(()=>toast('SQL copiado!','success'));
+}
+
+const SEED = {
+  emp: [
+    {id:1,nome:"Postos BV Sul",cnpj:"12.345.678/0001-99",resp:"Carlos Almeida",email:"carlos@bvsul.com.br",tel:"(44) 99801-1234",end:"Av. das Indústrias, 1200",mun:"Campo Mourão",uf:"PR",cep:"",nlic:"LO-2021-0034",tlic:"LO",demis:"2021-03-15",dvenc:"2024-03-15",status:"Ativa",tipoAgua:"Água de Abastecimento Público (SANEPAR)",outorga:"Não — isento",efluente:"Sim",tipoEfluente:"Efluente Doméstico (sanitário)",reuso:"Não — lançamento no corpo receptor",corpoReceptor:"Rede pública"},
+    {id:2,nome:"Frigorífico AgroNorte",cnpj:"98.765.432/0001-11",resp:"Fernanda Lima",email:"flima@agronorte.com",tel:"(44) 99712-5678",end:"Rod. PR-323, km 12",mun:"Cianorte",uf:"PR",cep:"",nlic:"LI-2020-0015",tlic:"LI",demis:"2020-07-20",dvenc:"2025-07-20",status:"Ativa",tipoAgua:"Água de Poço Artesiano",outorga:"Sim — outorga vigente",efluente:"Sim",tipoEfluente:"Efluente Agroindustrial",reuso:"Sim — reúso parcial",corpoReceptor:"Rio Ivaí"},
+    {id:3,nome:"Cerâmica Paraná",cnpj:"55.123.987/0001-44",resp:"João Pereira",email:"joao@ceramicapr.com",tel:"(44) 98765-4321",end:"Rua Gama, 450",mun:"Maringá",uf:"PR",cep:"",nlic:"LO-2019-0088",tlic:"LO",demis:"2019-01-10",dvenc:"2022-01-10",status:"Vencida",tipoAgua:"Água de Abastecimento Público (SANEPAR)",outorga:"Não — isento",efluente:"Não",tipoEfluente:"",reuso:"",corpoReceptor:""},
+    {id:4,nome:"Destilaria Verde Campo",cnpj:"33.456.789/0001-22",resp:"Ana Souza",email:"ana@verdecampo.com",tel:"(44) 99634-8765",end:"Estr. Rural km 5",mun:"Goioerê",uf:"PR",cep:"",nlic:"LO-2022-0012",tlic:"LO",demis:"2022-05-05",dvenc:"2027-05-05",status:"Ativa",tipoAgua:"Água Superficial (rio/lago)",outorga:"Sim — outorga vigente",efluente:"Sim",tipoEfluente:"Efluente Agroindustrial",reuso:"Sim — reúso total (zero líquido)",corpoReceptor:""},
+    {id:5,nome:"Supermercado MaxFome",cnpj:"77.890.123/0001-55",resp:"Roberto Dias",email:"rdias@maxfome.com",tel:"(44) 99543-2109",end:"Rua XV de Nov., 800",mun:"Umuarama",uf:"PR",cep:"",nlic:"LP-2023-0007",tlic:"LP",demis:"2023-09-12",dvenc:"2026-09-12",status:"Ativa",tipoAgua:"Água de Abastecimento Público (SANEPAR)",outorga:"Não — isento",efluente:"Sim",tipoEfluente:"Efluente Doméstico (sanitário)",reuso:"Não — lançamento no corpo receptor",corpoReceptor:"Rede pública"},
+  ],
+  pend: [
+    {id:1,emp:"Postos BV Sul",tipo:"Condicionante",desc:"Implantação de caixa separadora de gordura",dabertura:"2024-01-15",prazo:"2024-04-30",status:"Em Andamento",resp:"Carlos Almeida",obs:"Prazo prorrogado a pedido"},
+    {id:2,emp:"Frigorífico AgroNorte",tipo:"Monitoramento",desc:"Relatório semestral de efluente não enviado",dabertura:"2024-02-10",prazo:"2024-02-28",status:"Aberto",resp:"Fernanda Lima",obs:"2ª notificação enviada"},
+    {id:3,emp:"Cerâmica Paraná",tipo:"Adequação",desc:"Regularização da chaminé de emissão",dabertura:"2024-03-05",prazo:"2024-06-30",status:"Em Andamento",resp:"João Pereira",obs:"Projeto em elaboração"},
+    {id:4,emp:"Destilaria Verde Campo",tipo:"Documentação",desc:"Renovação de ART do responsável técnico",dabertura:"2024-04-01",prazo:"2024-04-15",status:"Concluído",resp:"Ana Souza",obs:"Protocolo 2024/042"},
+    {id:5,emp:"Supermercado MaxFome",tipo:"Monitoramento",desc:"Laudo de análise de água do poço pendente",dabertura:"2024-03-20",prazo:"2024-05-30",status:"Aberto",resp:"Roberto Dias",obs:"3ª cobrança via e-mail"},
+  ],
+  anal: [
+    {id:1,emp:"Postos BV Sul",tipo:"Efluente",params:"DBO, DQO, pH, SS",period:"Semestral",ultima:"2024-01-10",lab:"LabAmb Ltda",laudo:"LA-2024-001",resultado:"Conforme",proxima:"2024-07-10",status:"Aguardando"},
+    {id:2,emp:"Frigorífico AgroNorte",tipo:"Efluente",params:"DBO, DQO, N-Total, Fósforo",period:"Trimestral",ultima:"2024-01-15",lab:"EnviroLab",laudo:"EL-2024-023",resultado:"Conforme",proxima:"2024-04-15",status:"Atrasada"},
+    {id:3,emp:"Cerâmica Paraná",tipo:"Água de Poço",params:"pH, turbidez, coliformes",period:"Semestral",ultima:"2024-02-20",lab:"LabAmb Ltda",laudo:"LA-2024-008",resultado:"Não Conforme",proxima:"2024-08-20",status:"Realizada"},
+    {id:4,emp:"Destilaria Verde Campo",tipo:"Efluente",params:"DBO, DQO, pH, Temp",period:"Mensal",ultima:"2024-04-05",lab:"BioAnálise",laudo:"BA-2024-041",resultado:"Conforme",proxima:"2024-05-05",status:"Aguardando"},
+    {id:5,emp:"Supermercado MaxFome",tipo:"Água de Poço",params:"pH, dureza, coliformes, nitrato",period:"Anual",ultima:"2023-03-10",lab:"LabAmb Ltda",laudo:"LA-2023-099",resultado:"Conforme",proxima:"2024-03-10",status:"Atrasada"},
+  ],
+  mtr: [
+    {id:1,num:"MTR-2024-001",demis:"2024-01-15",emp:"Postos BV Sul",transp:"TransResi Ltda",dest:"Destino Verde S.A.",residuo:"Resíduos de Óleo Lubrificante",ibama:"I050",qtd:850,drec:"2024-01-25",status:"Concluído"},
+    {id:2,num:"MTR-2024-002",demis:"2024-01-20",emp:"Frigorífico AgroNorte",transp:"Eco Trans PR",dest:"BioDestino Ltda",residuo:"Lodo de ETE",ibama:"II062",qtd:2400,drec:"2024-01-30",status:"Concluído"},
+    {id:3,num:"MTR-2024-003",demis:"2024-02-05",emp:"Cerâmica Paraná",transp:"TransResi Ltda",dest:"ReciclaMax PR",residuo:"Resíduos de Argila",ibama:"II059",qtd:1200,drec:"",status:"Em Trânsito"},
+    {id:4,num:"MTR-2024-004",demis:"2024-03-10",emp:"Destilaria Verde Campo",transp:"AgroTrans",dest:"CompostBio",residuo:"Torta de Filtro",ibama:"II062",qtd:5000,drec:"2024-03-20",status:"Concluído"},
+    {id:5,num:"MTR-2024-005",demis:"2024-04-01",emp:"Supermercado MaxFome",transp:"Eco Trans PR",dest:"Destino Verde S.A.",residuo:"Resíduos Orgânicos",ibama:"II041",qtd:320,drec:"",status:"Pendente"},
+  ]
+};
+
+// ══════════════════════════════════════════════════════
+//  NAVIGATION
+// ══════════════════════════════════════════════════════
+const TITLES = {
+  dashboard:       ['Dashboard', ''],
+  empreendimentos: ['Empreendimentos', 'Gestão de empreendimentos'],
+  monitoramento:   ['Monitoramento', 'Controle de licenças'],
+  pendencias:      ['Pendências IAT', 'Instituto Água e Terra'],
+  analises:        ['Análises', 'Efluente e Água de Poço'],
+  mtr:             ['MTR', 'Manifesto de Transporte de Resíduos'],
+  busca:           ['Busca global', ''],
+  config:          ['⚙️ Configurações', 'Banco de dados Supabase'],
+};
+
+let currentPanel = 'dashboard';
+
+function nav(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  document.querySelector(`[onclick="nav('${id}')"]`).classList.add('active');
+  currentPanel = id;
+  const [t, s] = TITLES[id] || [id, ''];
+  document.getElementById('topbar-title').textContent = t;
+  document.getElementById('topbar-sub').textContent = s ? ' / ' + s : '';
+  renderPanel(id);
+}
+
+function renderPanel(id) {
+  if (id === 'dashboard')       renderDashboard();
+  if (id === 'empreendimentos') { buildFilters('emp'); renderTable('emp'); }
+  if (id === 'monitoramento')   { buildFilters('mon'); renderTable('mon'); renderKpis('mon'); }
+  if (id === 'pendencias')      { buildFilters('pend'); renderTable('pend'); renderKpis('pend'); }
+  if (id === 'analises')        { buildFilters('anal'); renderTable('anal'); renderKpis('anal'); }
+  if (id === 'mtr')             { buildFilters('mtr'); renderTable('mtr'); renderKpis('mtr'); }
+}
+
+// ══════════════════════════════════════════════════════
+//  BADGES / STATUS HELPERS
+// ══════════════════════════════════════════════════════
+function badgeStatus(s) {
+  const map = {
+    'Ativa':        'green',  'Em Renovação': 'warn',  'Vencida':   'red',   'Suspensa':    'gray',
+    'Aberto':       'red',    'Em Andamento': 'warn',  'Concluído': 'green',
+    'Aguardando':   'blue',   'Realizada':    'green', 'Atrasada':  'red',   'Não Conforme':'red', 'Conforme':'teal',
+    'Em Trânsito':  'warn',   'Pendente':     'red',
+  };
+  return `<span class="badge badge-${map[s]||'gray'}">${s}</span>`;
+}
+function fmtDate(d) {
+  if (!d) return '—';
+  const p = d.split('-');
+  return p.length === 3 ? `${p[2]}/${p[1]}/${p[0]}` : d;
+}
+function diasAberto(d) {
+  if (!d) return '—';
+  const diff = Math.floor((Date.now() - new Date(d)) / 86400000);
+  const cls = diff > 60 ? 'red' : diff > 30 ? 'warn' : 'green';
+  return `<span class="days-badge badge badge-${cls}">${diff}d</span>`;
+}
+function avatar(name) {
+  const initials = (name || '??').split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
+  return `<div class="avatar">${initials}</div>`;
+}
+
+// ══════════════════════════════════════════════════════
+//  TABLE CONFIGS
+// ══════════════════════════════════════════════════════
+const TABLES = {
+  emp: {
+    heads: ['Empreendimento','Município','Licença','Tipo','Vencimento','Status',''],
+    row: e => `
+      <td><div class="emp-cell">${avatar(e.nome)}<div><div class="name">${e.nome}</div><div class="sub">${e.cnpj}</div></div></div></td>
+      <td><span class="td-muted">${e.mun} — ${e.uf}</span></td>
+      <td class="td-mono">${e.nlic||'—'}</td>
+      <td><span class="badge badge-gray">${e.tlic}</span></td>
+      <td class="td-mono">${fmtDate(e.dvenc)}</td>
+      <td>${badgeStatus(e.status)}</td>
+      <td><div class="action-cell">
+        <button class="btn btn-outline btn-sm" onclick='verEmp(${e.id})'>Ver</button>
+        <button class="btn btn-danger btn-sm" onclick='delItem("emp",${e.id})'>✕</button>
+      </div></td>`,
+    filter: (e,q) => [e.nome,e.cnpj,e.mun,e.resp,e.nlic].some(f=>(f||'').toLowerCase().includes(q)),
+    filterField: null,
+  },
+  mon: {
+    heads: ['Empreendimento','Município','Licença','Tipo','Dt. Emissão','Vencimento','Status',''],
+    row: e => `
+      <td><div class="emp-cell">${avatar(e.nome)}<div><div class="name">${e.nome}</div><div class="sub">${e.resp}</div></div></div></td>
+      <td class="td-muted">${e.mun} — ${e.uf}</td>
+      <td class="td-mono">${e.nlic||'—'}</td>
+      <td><span class="badge badge-gray">${e.tlic}</span></td>
+      <td class="td-mono">${fmtDate(e.demis)}</td>
+      <td class="td-mono">${fmtDate(e.dvenc)}</td>
+      <td>${badgeStatus(e.status)}</td>
+      <td><button class="btn btn-outline btn-sm" onclick='verEmp(${e.id})'>Ver</button></td>`,
+    filter: (e,q) => [e.nome,e.mun,e.nlic,e.resp].some(f=>(f||'').toLowerCase().includes(q)),
+    filterField: 'status',
+    filterLabel: s => badgeStatus(s),
+    filterValues: ['Ativa','Em Renovação','Vencida','Suspensa'],
+    source: () => DB.emp,
+  },
+  pend: {
+    heads: ['Empreendimento','Tipo','Descrição','Dt. Abertura','Prazo','Dias aberto','Status',''],
+    row: e => `
+      <td><span class="name">${e.emp}</span></td>
+      <td><span class="badge badge-purple">${e.tipo}</span></td>
+      <td style="max-width:220px;white-space:normal;font-size:12px">${e.desc}</td>
+      <td class="td-mono">${fmtDate(e.dabertura)}</td>
+      <td class="td-mono">${fmtDate(e.prazo)}</td>
+      <td>${diasAberto(e.dabertura)}</td>
+      <td>${badgeStatus(e.status)}</td>
+      <td><button class="btn btn-danger btn-sm" onclick='delItem("pend",${e.id})'>✕</button></td>`,
+    filter: (e,q) => [e.emp,e.tipo,e.desc,e.resp].some(f=>(f||'').toLowerCase().includes(q)),
+    filterField: 'status',
+    filterValues: ['Aberto','Em Andamento','Concluído'],
+  },
+  anal: {
+    heads: ['Empreendimento','Tipo','Parâmetros','Última coleta','Próxima','Lab.','Resultado','Status',''],
+    row: e => `
+      <td><span class="name">${e.emp}</span></td>
+      <td><span class="badge badge-teal">${e.tipo}</span></td>
+      <td style="max-width:180px;white-space:normal;font-size:11px;color:var(--text2)">${e.params}</td>
+      <td class="td-mono">${fmtDate(e.ultima)}</td>
+      <td class="td-mono">${fmtDate(e.proxima)}</td>
+      <td class="td-muted text-sm">${e.lab}</td>
+      <td>${badgeStatus(e.resultado)}</td>
+      <td>${badgeStatus(e.status)}</td>
+      <td><button class="btn btn-danger btn-sm" onclick='delItem("anal",${e.id})'>✕</button></td>`,
+    filter: (e,q) => [e.emp,e.tipo,e.params,e.lab,e.laudo].some(f=>(f||'').toLowerCase().includes(q)),
+    filterField: 'status',
+    filterValues: ['Aguardando','Realizada','Atrasada'],
+  },
+  mtr: {
+    heads: ['Nº MTR','Empreendimento','Transportadora','Destinatária','Resíduo','Qtde (kg)','Dt. Receb.','Status',''],
+    row: e => `
+      <td class="td-mono">${e.num}</td>
+      <td><span class="name">${e.emp}</span></td>
+      <td class="td-muted text-sm">${e.transp}</td>
+      <td class="td-muted text-sm">${e.dest}</td>
+      <td style="max-width:160px;white-space:normal;font-size:12px">${e.residuo}</td>
+      <td class="td-mono">${Number(e.qtd||0).toLocaleString('pt-BR')} kg</td>
+      <td class="td-mono">${fmtDate(e.drec)}</td>
+      <td>${badgeStatus(e.status)}</td>
+      <td><button class="btn btn-danger btn-sm" onclick='delItem("mtr",${e.id})'>✕</button></td>`,
+    filter: (e,q) => [e.num,e.emp,e.transp,e.dest,e.residuo,e.ibama].some(f=>(f||'').toLowerCase().includes(q)),
+    filterField: 'status',
+    filterValues: ['Pendente','Em Trânsito','Concluído'],
+  },
+};
+
+// ── Active filters state ──────────────────────────────
+const activeFilters = { emp:{}, mon:{}, pend:{}, anal:{}, mtr:{} };
+
+function buildFilters(key) {
+  const cfg = TABLES[key];
+  if (!cfg.filterField) { document.getElementById('filters-'+key).innerHTML=''; return; }
+  const el = document.getElementById('filters-' + key);
+  const vals = cfg.filterValues || [];
+  el.innerHTML = `<button class="chip ${!activeFilters[key][cfg.filterField]?'active':''}" onclick="setFilter('${key}','${cfg.filterField}','')">Todos</button>` +
+    vals.map(v => `<button class="chip ${activeFilters[key][cfg.filterField]===v?'active':''}" onclick="setFilter('${key}','${cfg.filterField}','${v}')">${v}</button>`).join('');
+}
+function setFilter(key, field, val) {
+  activeFilters[key][field] = val;
+  buildFilters(key);
+  renderTable(key);
+}
+
+function renderTable(key) {
+  const cfg = TABLES[key];
+  const source = cfg.source ? cfg.source() : DB[key];
+  const q = (document.getElementById('search-'+key.replace('mon','mon'))?.value || '').toLowerCase();
+  let rows = source.filter(e => cfg.filter(e, q));
+  const af = activeFilters[key];
+  if (af && cfg.filterField && af[cfg.filterField]) {
+    rows = rows.filter(e => e[cfg.filterField] === af[cfg.filterField]);
+  }
+  document.getElementById('thead-' + key).innerHTML = cfg.heads.map(h => `<th>${h}</th>`).join('');
+  const tbody = document.getElementById('tbody-' + key);
+  if (!rows.length) {
+    tbody.innerHTML = `<tr><td colspan="${cfg.heads.length}" style="padding:2.5rem;text-align:center;color:var(--text3)">Nenhum registro encontrado.</td></tr>`;
+  } else {
+    tbody.innerHTML = rows.map(e => `<tr>${cfg.row(e)}</tr>`).join('');
+  }
+}
+
+// ══════════════════════════════════════════════════════
+//  KPI RENDERING
+// ══════════════════════════════════════════════════════
+function renderKpis(key) {
+  const el = document.getElementById(key + '-kpis');
+  if (!el) return;
+  if (key === 'mon') {
+    const d = DB.emp;
+    el.innerHTML = kc('green','Total',d.length,'empreendimentos') +
+      kc('blue','Ativas',d.filter(e=>e.status==='Ativa').length,'licenças') +
+      kc('red','Vencidas',d.filter(e=>e.status==='Vencida').length,'licenças') +
+      kc('warn','Em renovação',d.filter(e=>e.status==='Em Renovação').length,'licenças');
+  }
+  if (key === 'pend') {
+    const d = DB.pend;
+    el.innerHTML = kc('purple','Total',d.length,'pendências') +
+      kc('red','Abertas',d.filter(e=>e.status==='Aberto').length,'') +
+      kc('warn','Em andamento',d.filter(e=>e.status==='Em Andamento').length,'') +
+      kc('green','Concluídas',d.filter(e=>e.status==='Concluído').length,'');
+  }
+  if (key === 'anal') {
+    const d = DB.anal;
+    el.innerHTML = kc('teal','Total',d.length,'análises') +
+      kc('red','Atrasadas',d.filter(e=>e.status==='Atrasada').length,'') +
+      kc('blue','Aguardando',d.filter(e=>e.status==='Aguardando').length,'') +
+      kc('green','Realizadas',d.filter(e=>e.status==='Realizada').length,'');
+  }
+  if (key === 'mtr') {
+    const d = DB.mtr;
+    const total_kg = d.reduce((a,e)=>a+(Number(e.qtd)||0),0);
+    el.innerHTML = kc('teal','Total MTRs',d.length,'') +
+      kc('green','Concluídos',d.filter(e=>e.status==='Concluído').length,'') +
+      kc('warn','Em trânsito',d.filter(e=>e.status==='Em Trânsito').length,'') +
+      kc('red','Pendentes',d.filter(e=>e.status==='Pendente').length,'') +
+      kc('blue','Volume total',total_kg.toLocaleString('pt-BR'),'kg');
+  }
+}
+function kc(cls, lbl, val, sub) {
+  return `<div class="kpi-card ${cls}"><div class="kpi-label">${lbl}</div><div class="kpi-value">${val}</div>${sub?`<div class="kpi-sub">${sub}</div>`:''}</div>`;
+}
+
+// ══════════════════════════════════════════════════════
+//  DASHBOARD
+// ══════════════════════════════════════════════════════
+function renderDashboard() {
+  const emp = DB.emp, pend = DB.pend, anal = DB.anal, mtr = DB.mtr;
+  const abertas = pend.filter(e=>e.status!=='Concluído').length;
+  document.getElementById('badge-pend').textContent = abertas;
+
+  document.getElementById('dash-kpis').innerHTML =
+    kc('green','Empreendimentos',emp.length,'cadastrados') +
+    kc('blue','Licenças ativas',emp.filter(e=>e.status==='Ativa').length,'') +
+    kc('red','Licenças vencidas',emp.filter(e=>e.status==='Vencida').length,'') +
+    kc('warn','Pendências abertas',abertas,'IAT') +
+    kc('teal','Análises atrasadas',anal.filter(e=>e.status==='Atrasada').length,'') +
+    kc('purple','MTRs pendentes',mtr.filter(e=>e.status==='Pendente').length,'');
+
+  // Chart: Licenças
+  const licStatus = ['Ativa','Em Renovação','Vencida','Suspensa'];
+  const licColors = ['var(--accent)','var(--warn)','var(--danger)','var(--text3)'];
+  document.getElementById('chart-licencas').innerHTML = licStatus.map((s,i) => {
+    const cnt = emp.filter(e=>e.status===s).length;
+    const pct = emp.length ? Math.round(cnt/emp.length*100) : 0;
+    return `<div style="margin-bottom:.75rem">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+        <span style="font-size:12px;color:var(--text2)">${s}</span>
+        <span style="font-size:12px;font-family:'DM Mono',monospace;color:${licColors[i]}">${cnt}</span>
+      </div>
+      <div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:${licColors[i]}"></div></div>
+    </div>`;
+  }).join('');
+
+  // Chart: Pendências por emp
+  const pendByEmp = {};
+  pend.filter(e=>e.status!=='Concluído').forEach(e=>{ pendByEmp[e.emp]=(pendByEmp[e.emp]||0)+1; });
+  const sorted = Object.entries(pendByEmp).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  document.getElementById('chart-pendencias').innerHTML = sorted.length ? sorted.map(([name,cnt]) => {
+    const pct = Math.min(100, cnt * 25);
+    return `<div style="margin-bottom:.75rem">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+        <span style="font-size:12px;color:var(--text2);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${name}</span>
+        <span style="font-size:12px;font-family:'DM Mono',monospace;color:var(--warn)">${cnt}</span>
+      </div>
+      <div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:var(--warn)"></div></div>
+    </div>`;
+  }).join('') : '<p style="color:var(--text3);font-size:12px">Nenhuma pendência aberta.</p>';
+
+  // Chart: Análises próximas 30 dias
+  const today = new Date(); today.setHours(0,0,0,0);
+  const in30 = new Date(today.getTime() + 30*86400000);
+  const proximas = anal.filter(e => {
+    if (!e.proxima) return false;
+    const d = new Date(e.proxima);
+    return d >= today && d <= in30;
+  });
+  document.getElementById('chart-analises').innerHTML = proximas.length ?
+    proximas.map(e => `<div style="display:flex;align-items:center;gap:10px;padding:.5rem 0;border-bottom:1px solid var(--border)">
+      <span class="badge badge-teal" style="flex-shrink:0">${e.tipo}</span>
+      <span style="font-size:12px;flex:1;color:var(--text2)">${e.emp}</span>
+      <span style="font-size:11px;font-family:'DM Mono',monospace;color:var(--warn)">${fmtDate(e.proxima)}</span>
+    </div>`).join('') :
+    '<p style="color:var(--text3);font-size:12px">Nenhuma análise nos próximos 30 dias.</p>';
+
+  // Chart: MTR status
+  const mtrStatus = ['Concluído','Em Trânsito','Pendente'];
+  const mtrColors = ['var(--accent)','var(--warn)','var(--danger)'];
+  document.getElementById('chart-mtr').innerHTML = mtrStatus.map((s,i) => {
+    const cnt = mtr.filter(e=>e.status===s).length;
+    const pct = mtr.length ? Math.round(cnt/mtr.length*100) : 0;
+    return `<div style="margin-bottom:.75rem">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+        <span style="font-size:12px;color:var(--text2)">${s}</span>
+        <span style="font-size:12px;font-family:'DM Mono',monospace;color:${mtrColors[i]}">${cnt}</span>
+      </div>
+      <div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:${mtrColors[i]}"></div></div>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════════════
+//  BUSCA GLOBAL
+// ══════════════════════════════════════════════════════
+function renderBusca() {
+  const q = document.getElementById('search-global').value.toLowerCase().trim();
+  const el = document.getElementById('busca-result');
+  if (!q) { el.innerHTML = `<div class="empty-state"><div class="icon">🔍</div><p>Digite para pesquisar em todos os módulos.</p></div>`; return; }
+  const results = DB.emp.filter(e => [e.nome,e.cnpj,e.mun,e.resp,e.nlic,e.end].some(f=>(f||'').toLowerCase().includes(q)));
+  if (!results.length) { el.innerHTML = `<div class="empty-state"><div class="icon">🔍</div><p>Nenhum empreendimento encontrado para "<strong>${q}</strong>".</p></div>`; return; }
+  el.innerHTML = results.map(e => {
+    const pends = DB.pend.filter(p=>p.emp===e.nome && p.status!=='Concluído');
+    const anais = DB.anal.filter(a=>a.emp===e.nome);
+    const mtrs  = DB.mtr.filter(m=>m.emp===e.nome);
+    return `<div class="form-card" style="margin-bottom:1rem">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:1rem">
+        ${avatar(e.nome)}
+        <div style="flex:1"><div style="font-weight:600;font-size:15px">${e.nome}</div>
+        <div style="font-size:12px;color:var(--text3)">${e.mun} — ${e.uf} &nbsp;·&nbsp; ${e.cnpj}</div></div>
+        ${badgeStatus(e.status)} <span class="badge badge-gray">${e.tlic}</span>
+      </div>
+      <div class="detail-grid" style="margin-bottom:1rem">
+        <div class="detail-item"><div class="dl">Responsável</div><div class="dv">${e.resp}</div></div>
+        <div class="detail-item"><div class="dl">E-mail / Tel</div><div class="dv">${e.email||'—'} &nbsp;·&nbsp; ${e.tel||'—'}</div></div>
+        <div class="detail-item"><div class="dl">Licença</div><div class="dv td-mono">${e.nlic||'—'}</div></div>
+        <div class="detail-item"><div class="dl">Vencimento</div><div class="dv">${fmtDate(e.dvenc)}</div></div>
+        <div class="detail-item"><div class="dl">Endereço</div><div class="dv">${e.end}</div></div>
+        <div class="detail-item"><div class="dl">CEP</div><div class="dv">${e.cep||'—'}</div></div>
+      </div>
+      <div style="display:flex;gap:.75rem;flex-wrap:wrap">
+        <span class="badge badge-warn">⚠ ${pends.length} pendência${pends.length!==1?'s':''} abertas</span>
+        <span class="badge badge-teal">🔬 ${anais.length} análise${anais.length!==1?'s':''}</span>
+        <span class="badge badge-purple">♻ ${mtrs.length} MTR${mtrs.length!==1?'s':''}</span>
+        ${e.tipoAgua ? `<span class="badge badge-blue">💧 ${e.tipoAgua}</span>` : ''}
+        ${e.efluente==='Sim' ? `<span class="badge badge-teal">🌊 Efluente: ${e.tipoEfluente||'—'}</span>` : ''}
+        ${e.reuso && e.reuso!=='Não' ? `<span class="badge badge-green">♻ ${e.reuso}</span>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════════════
+//  MODAL HELPERS
+// ══════════════════════════════════════════════════════
+function openModal(key) {
+  // Populate emp selects
+  if (['pend','anal','mtr'].includes(key)) {
+    const sel = document.getElementById(key+'-emp');
+    sel.innerHTML = DB.emp.map(e=>`<option value="${e.nome}">${e.nome}</option>`).join('');
+  }
+  document.getElementById('modal-'+key).classList.remove('hidden');
+  if (key === 'emp') setTimeout(initEfluenteLogic, 50);
+}
+function closeModal(key) {
+  document.getElementById('modal-'+key).classList.add('hidden');
+}
+document.querySelectorAll('.modal-bg').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) m.classList.add('hidden'); });
+});
+
+function g(id) { return document.getElementById(id)?.value?.trim() || ''; }
+
+// ── SAVE HELPERS ─────────────────────────────────────
+async function salvarEmp() {
+  if (!g('emp-nome')||!g('emp-cnpj')||!g('emp-resp')||!g('emp-end')||!g('emp-mun')) {
+    toast('Preencha os campos obrigatórios ★', 'error'); return;
+  }
+  const row = { id:nextId('emp'), nome:g('emp-nome'), cnpj:g('emp-cnpj'), resp:g('emp-resp'),
+    email:g('emp-email'), tel:g('emp-tel'), end:g('emp-end'), mun:g('emp-mun'),
+    uf:g('emp-uf'), cep:g('emp-cep'), nlic:g('emp-nlic'), tlic:g('emp-tlic'),
+    demis:g('emp-demis')||null, dvenc:g('emp-dvenc')||null, status:g('emp-status'),
+    tipoAgua:g('emp-tipo-agua'), outorga:g('emp-outorga'),
+    efluente:g('emp-efluente'), tipoEfluente:g('emp-tipo-efluente'),
+    reuso:g('emp-reuso'), corpoReceptor:g('emp-corpo-receptor') };
+  DB.emp.push(row);
+  await saveDB('emp', row);
+  closeModal('emp');
+  clearForm(['emp-nome','emp-cnpj','emp-resp','emp-email','emp-tel','emp-end','emp-mun','emp-cep','emp-nlic','emp-demis','emp-dvenc','emp-corpo-receptor']);
+  toast(`"${row.nome}" cadastrado!`, 'success');
+  renderPanel(currentPanel);
+}
+async function salvarPend() {
+  if (!g('pend-emp')||!g('pend-desc')) { toast('Preencha os campos obrigatórios ★','error'); return; }
+  const row = { id:nextId('pend'), emp:g('pend-emp'), tipo:g('pend-tipo'), desc:g('pend-desc'),
+    dabertura:g('pend-dabertura')||null, prazo:g('pend-prazo')||null, status:g('pend-status'),
+    resp:g('pend-resp'), obs:g('pend-obs') };
+  DB.pend.push(row);
+  await saveDB('pend', row);
+  closeModal('pend');
+  toast('Pendência registrada!', 'success');
+  renderPanel(currentPanel);
+}
+async function salvarAnal() {
+  if (!g('anal-emp')) { toast('Selecione o empreendimento','error'); return; }
+  const row = { id:nextId('anal'), emp:g('anal-emp'), tipo:g('anal-tipo'), params:g('anal-params'),
+    period:g('anal-period'), ultima:g('anal-ultima')||null, lab:g('anal-lab'), laudo:g('anal-laudo'),
+    resultado:g('anal-resultado'), proxima:g('anal-proxima')||null, status:g('anal-status') };
+  DB.anal.push(row);
+  await saveDB('anal', row);
+  closeModal('anal');
+  toast('Análise registrada!', 'success');
+  renderPanel(currentPanel);
+}
+async function salvarMtr() {
+  if (!g('mtr-num')||!g('mtr-emp')) { toast('Preencha os campos obrigatórios ★','error'); return; }
+  const row = { id:nextId('mtr'), num:g('mtr-num'), demis:g('mtr-demis')||null, emp:g('mtr-emp'),
+    transp:g('mtr-transp'), dest:g('mtr-dest'), residuo:g('mtr-residuo'), ibama:g('mtr-ibama'),
+    qtd:Number(g('mtr-qtd'))||0, drec:g('mtr-drec')||null, status:g('mtr-status') };
+  DB.mtr.push(row);
+  await saveDB('mtr', row);
+  closeModal('mtr');
+  toast('MTR registrado!', 'success');
+  renderPanel(currentPanel);
+}
+
+// ── DELETE ────────────────────────────────────────────
+async function delItem(key, id) {
+  if (!confirm('Remover este registro?')) return;
+  await deleteDB(key, id);
+  renderPanel(currentPanel);
+  toast('Registro removido.', 'success');
+}
+
+// ── VER EMPREENDIMENTO ────────────────────────────────
+function verEmp(id) {
+  const e = DB.emp.find(x=>x.id===id); if (!e) return;
+  const aguaInfo = [
+    e.tipoAgua ? `💧 ${e.tipoAgua}` : '',
+    e.outorga  ? `Outorga: ${e.outorga}` : '',
+    e.efluente === 'Sim' ? `Efluente: ${e.tipoEfluente||'—'} | Reúso: ${e.reuso||'—'}` : '',
+    e.corpoReceptor ? `Destino: ${e.corpoReceptor}` : '',
+  ].filter(Boolean).join('\n');
+  alert(`${e.nome}\n${e.cnpj}\n${e.mun} — ${e.uf}\nLicença: ${e.nlic} (${e.status})\nVencimento: ${fmtDate(e.dvenc)}\nResponsável: ${e.resp}\n${e.email} | ${e.tel}${aguaInfo ? '\n\n' + aguaInfo : ''}`);
+}
+
+// ── CLEAR FORM ────────────────────────────────────────
+function clearForm(ids) { ids.forEach(id => { const el = document.getElementById(id); if(el) el.value=''; }); }
+
+// ── Water/Effluent conditional fields ─────────────
+function initEfluenteLogic() {
+  const sel = document.getElementById('emp-efluente');
+  if (!sel) return;
+  function toggle() {
+    const show = sel.value === 'Sim';
+    ['campo-tipo-efluente','campo-reuso','campo-corpo-receptor'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = show ? '' : 'none';
+    });
+  }
+  sel.addEventListener('change', toggle);
+  toggle();
+}
+
+// ══════════════════════════════════════════════════════
+//  TOAST
+// ══════════════════════════════════════════════════════
+function toast(msg, type='success') {
+  const area = document.getElementById('toast-area');
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.innerHTML = `<span>${type==='success'?'✓':'✕'}</span> ${msg}`;
+  area.appendChild(el);
+  setTimeout(() => el.remove(), 3500);
+}
+
+// ══════════════════════════════════════════════════════
+//  DATE LABEL
+// ══════════════════════════════════════════════════════
+function setDateLabel() {
+  const now = new Date();
+  const opts = { weekday:'long', day:'2-digit', month:'long', year:'numeric' };
+  document.getElementById('today-lbl').textContent = now.toLocaleDateString('pt-BR', opts);
+}
+
+// Fix search id mismatch
+document.getElementById('panel-monitoramento').querySelector('input').id = 'search-mon';
+
+// ══════════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════════
+(async () => {
+  // Load saved Supabase credentials
+  const savedUrl = localStorage.getItem(LS.url);
+  const savedKey = localStorage.getItem(LS.key);
+  if (savedUrl && savedKey) {
+    const ok = initSupa(savedUrl, savedKey);
+    if (ok) {
+      // Pre-fill config fields
+      const u = document.getElementById('cfg-url');
+      const k = document.getElementById('cfg-key');
+      if (u) u.value = savedUrl;
+      if (k) k.value = savedKey;
+    }
+  } else {
+    setConnStatus('offline');
+  }
+  await loadDB();
+  setDateLabel();
+  renderDashboard();
+  document.getElementById('badge-pend').textContent =
+    DB.pend.filter(e=>e.status!=='Concluído').length;
+})();
+</script>
+</body>
+</html>
